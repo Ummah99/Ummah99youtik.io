@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Downloader</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Video Downloader</h1>
+        <p>Lade Videos von TikTok und YouTube herunter</p>
+        
+        <div class="input-container">
+            <input type="text" id="videoUrl" placeholder="Video-URL einfügen (TikTok oder YouTube)">
+            <div class="format-selection">
+                <button id="mp4Btn" class="active">MP4</button>
+                <button id="mp3Btn">MP3</button>
+            </div>
+            <button id="downloadBtn">Download starten</button>
+        </div>
+        
+        <div id="result" class="hidden">
+            <div class="video-info">
+                <div id="thumbnail"></div>
+                <div id="videoDetails"></div>
+            </div>
+            <a id="downloadLink" class="download-button" target="_blank">Herunterladen</a>
+        </div>
+        
+        <div id="loading" class="hidden">
+            <div class="spinner"></div>
+            <p>Video wird verarbeitet...</p>
+        </div>
+        
+        <div id="error" class="hidden">
+            <p>Ein Fehler ist aufgetreten. Bitte überprüfe die URL und versuche es erneut.</p>
+        </div>
+    </div>
+    
+    <footer>
+        <p>Hinweis: Bitte lade nur Videos herunter, für die du die entsprechenden Rechte besitzt.</p>
+    </footer>
+    
+    <script src="script.js"></script>
+</body>
+</html> 
