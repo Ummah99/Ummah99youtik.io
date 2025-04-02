@@ -187,3 +187,48 @@ footer {
     color: #666;
     font-weight: bold;
 }
+
+/* Neue Stile für die Download-Optionen */
+.download-options {
+    margin-top: 20px;
+    border-top: 1px solid #eee;
+    padding-top: 15px;
+}
+
+.download-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.service-button {
+    flex: 1;
+    min-width: 120px;
+    margin-top: 0;
+}
+
+#tiktokUrlCopy {
+    width: 100%;
+    padding: 8px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    background-color: #f9f9f9;
+}
+
+.copy-button {
+    background-color: #666;
+    margin-bottom: 15px;
+}
+
+.copy-button:hover {
+    background-color: #555;
+}
+
+.small-note {
+    font-size: 12px;
+    color: #888;
+    margin-top: 15px;
+}

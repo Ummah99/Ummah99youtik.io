@@ -92,16 +92,6 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        // Kostenloser YouTube Downloader Service
-        const downloadBaseUrl = 'https://yt-download.org/api/button';
-        let downloadUrl = '';
-        
-        if (format === 'mp4') {
-            downloadUrl = `${downloadBaseUrl}/mp4/${videoId}`;
-        } else {
-            downloadUrl = `${downloadBaseUrl}/mp3/${videoId}`;
-        }
-        
         // Video-Informationen über die YouTube oEmbed API abrufen
         fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`)
             .then(response => {
@@ -116,10 +106,67 @@ document.addEventListener('DOMContentLoaded', function() {
                     <p>Kanal: ${data.author_name || 'Unbekannt'}</p>
                 `;
                 
-                // Download-Link setzen
-                downloadLink.href = downloadUrl;
-                downloadLink.target = "_blank";
-                downloadLink.download = `youtube_${videoId}.${format}`;
+                // Direkte Weiterleitung zu einem zuverlässigen Downloader-Service
+                // Wir verwenden hier mehrere Optionen für den Fall, dass eine nicht funktioniert
+                let downloadServices = [];
+                
+                if (format === 'mp4') {
+                    downloadServices = [
+                        {
+                            name: "Y2Mate",
+                            url: `https://www.y2mate.com/youtube/${videoId}`
+                        },
+                        {
+                            name: "SaveFrom.net",
+                            url: `https://de.savefrom.net/#url=${encodeURIComponent(`https://www.youtube.com/watch?v=${videoId}`)}`
+                        },
+                        {
+                            name: "9xbuddy",
+                            url: `https://9xbuddy.com/process?url=${encodeURIComponent(`https://www.youtube.com/watch?v=${videoId}`)}`
+                        }
+                    ];
+                } else {
+                    downloadServices = [
+                        {
+                            name: "Y2Mate MP3",
+                            url: `https://www.y2mate.com/youtube-mp3/${videoId}`
+                        },
+                        {
+                            name: "YTMP3.cc",
+                            url: `https://ytmp3.cc/youtube-to-mp3/?id=${videoId}`
+                        },
+                        {
+                            name: "OnlineVideoConverter",
+                            url: `https://onlinevideoconverter.pro/de/youtube-converter-mp3?url=https://www.youtube.com/watch?v=${videoId}`
+                        }
+                    ];
+                }
+                
+                // Download-Optionen anzeigen
+                let downloadOptionsHTML = `
+                    <div class="download-options">
+                        <h4>Download-Optionen:</h4>
+                        <p>Klicke auf einen der folgenden Dienste, um das Video ${format === 'mp4' ? '' : 'als MP3 '}herunterzuladen:</p>
+                        <div class="download-buttons">
+                `;
+                
+                downloadServices.forEach(service => {
+                    downloadOptionsHTML += `
+                        <a href="${service.url}" target="_blank" class="download-button service-button">
+                            ${service.name}
+                        </a>
+                    `;
+                });
+                
+                downloadOptionsHTML += `
+                        </div>
+                    </div>
+                `;
+                
+                videoDetailsDiv.innerHTML += downloadOptionsHTML;
+                
+                // Ursprünglichen Download-Button ausblenden
+                downloadLink.style.display = 'none';
                 
                 loadingDiv.classList.add('hidden');
                 resultDiv.classList.remove('hidden');
@@ -133,21 +180,68 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // TikTok Video verarbeiten
     function processTikTokVideo(videoUrl, format) {
-        // Kostenloser TikTok Downloader Service
-        const ssstikUrl = 'https://ssstik.io/de';
+        // Mehrere TikTok Downloader Services anbieten
+        const tiktokServices = [
+            {
+                name: "SSStiK",
+                url: "https://ssstik.io/de"
+            },
+            {
+                name: "SnapTik",
+                url: "https://snaptik.app/de"
+            },
+            {
+                name: "TikMate",
+                url: "https://tikmate.app/"
+            }
+        ];
         
         // Da wir keine direkte API haben, leiten wir den Benutzer zum Service weiter
         thumbnailDiv.innerHTML = `<div class="placeholder-thumbnail">TikTok Video</div>`;
-        videoDetailsDiv.innerHTML = `
+        
+        let tiktokOptionsHTML = `
             <h3>TikTok Video herunterladen</h3>
-            <p>Für TikTok-Videos nutzen wir einen externen Service.</p>
-            <p>Klicke auf den Button unten, um zum Download-Service zu gelangen.</p>
+            <p>Für TikTok-Videos nutzen wir externe Services.</p>
+            <p>Kopiere diese URL: <input type="text" value="${videoUrl}" id="tiktokUrlCopy" readonly></p>
+            <button id="copyTiktokUrl" class="copy-button">URL kopieren</button>
+            <p>Klicke dann auf einen der folgenden Dienste:</p>
+            <div class="download-buttons">
         `;
         
-        // Download-Link setzen
-        downloadLink.href = ssstikUrl;
-        downloadLink.target = "_blank";
-        downloadLink.textContent = "Zum TikTok Downloader";
+        tiktokServices.forEach(service => {
+            tiktokOptionsHTML += `
+                <a href="${service.url}" target="_blank" class="download-button service-button">
+                    ${service.name}
+                </a>
+            `;
+        });
+        
+        tiktokOptionsHTML += `
+            </div>
+            <p class="small-note">Füge die kopierte URL auf der Seite des Dienstes ein.</p>
+        `;
+        
+        videoDetailsDiv.innerHTML = tiktokOptionsHTML;
+        
+        // URL-Kopier-Funktion hinzufügen
+        setTimeout(() => {
+            const copyButton = document.getElementById('copyTiktokUrl');
+            const urlInput = document.getElementById('tiktokUrlCopy');
+            
+            if (copyButton && urlInput) {
+                copyButton.addEventListener('click', function() {
+                    urlInput.select();
+                    document.execCommand('copy');
+                    copyButton.textContent = 'Kopiert!';
+                    setTimeout(() => {
+                        copyButton.textContent = 'URL kopieren';
+                    }, 2000);
+                });
+            }
+        }, 100);
+        
+        // Ursprünglichen Download-Button ausblenden
+        downloadLink.style.display = 'none';
         
         loadingDiv.classList.add('hidden');
         resultDiv.classList.remove('hidden');
